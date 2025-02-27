@@ -1,27 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
-
-//create your first component
 const Home = () => {
-	return (
-		<div className="text-center">
-            
+	const [work, setWork] = useState('');
+	const [tareas, setTareas] = useState([]);
 
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
-		</div>
+	const handleChange = (e) => setWork(e.target.value);
+
+	const handleKeyDown = (e) => {
+		if (e.key === "Enter") {
+			if (work.trim() !== "") {
+				const nuevaTarea = `${tareas.length + 1}. ${work}`
+				setTareas([...tareas, nuevaTarea]);
+				setWork("");
+			}
+		}
+	};
+
+	const handleDelete = (index) => {
+		const nuevasTareas = tareas.filter((_, i) => i !== index);
+		const tareasRenumeradas = nuevasTareas.map((tarea, i) => `${i + 1}. ${tarea.split('. ')[1]}`);
+        
+        setTareas(tareasRenumeradas); 
+    };
+		
+
+	return (
+		<body className="fondo">
+			<div className="text-center mx-1">
+				<h2>To-Do List ✅</h2>
+
+				<input
+					type="text"
+					id="taskInput"
+					placeholder="Escribe una tarea..."
+					value={work}
+					onChange={handleChange}
+					onKeyDown={handleKeyDown}
+				/>
+				<button className="btn btn-primary mx-1" >Agregar</button>
+
+				<ul id="todo-list">
+					{tareas.map((tarea, index) => (
+						<li key={index} className="todo-item">
+							<span>{tarea}</span>
+							<button className="delete-btn" onClick={() => handleDelete(index)}>❌</button>
+						</li>
+					))}
+				</ul>
+			</div>
+		</body>
 	);
 };
 
